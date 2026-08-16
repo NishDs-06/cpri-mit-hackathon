@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-base:         #FFFFFF;
+  --bg-alt:          #F5F7FA;
+  --bg-panel:        #FFFFFF;
+
+  /* Institutional blue palette */
+  --blue-primary:    #0B3D91;
+  --blue-deep:       #06204D;
+  --blue-mid:        #2B6CB0;
+  --blue-tint:       #E8EFFB;
+
+  /* Gold — used ONLY for countdown timer */
+  --gold-accent:     #B8862E;
+
+  /* Text */
+  --text-primary:    #101828;
+  --text-secondary:  #475467;
+
+  /* Borders */
+  --border-hairline: #E4E7EC;
+}
+
+/* ─── Base resets ────────────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--text-primary);
+    background-color: var(--bg-base);
+  }
+
+  /* Body font is the grotesk; display is applied per-element */
+  body {
+    font-family: var(--font-body), 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Heading base — all headings default to the display serif */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), 'Source Serif 4', Georgia, serif;
+    line-height: 1.15;
+    color: var(--text-primary);
+  }
+
+  /* Smooth anchor scrolling accounts for the fixed navbar height (72px) */
+  :target {
+    scroll-margin-top: 80px;
+  }
+}
+
+/* ─── Hero background drift animation ───────────────────────────────────── */
+/*
+ * The SVG grid pattern is rendered at 200% width. The keyframe animates
+ * translateX from 0 → -50% so the repeat point is perfectly seamless.
+ * will-change: transform promotes this to its own GPU compositing layer,
+ * keeping the main thread free. The animation is 90s / linear / infinite
+ * at very low opacity — barely perceptible, adds texture without distraction.
+ */
+@keyframes hero-drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.hero-bg-drift {
+  animation: hero-drift 90s linear infinite;
+  will-change: transform;
+}
+
+/* ─── Reduced motion — freeze ALL animations site-wide ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-bg-drift {
+    animation: none;
+  }
+}
+
+/* ─── Floating label inputs ──────────────────────────────────────────────── */
+/*
+ * CSS-only floating label: label starts inside the input, floats above
+ * when the input is focused or has a value (:not(:placeholder-shown)).
+ */
+.floating-label-wrap {
+  position: relative;
+}
+
+.floating-label-wrap input,
+.floating-label-wrap textarea {
+  width: 100%;
+  padding: 1.375rem 0.875rem 0.5rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: 4px;
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  transition: border-color 150ms ease;
+  outline: none;
+}
+
+.floating-label-wrap input:focus,
+.floating-label-wrap textarea:focus {
+  border-color: var(--blue-mid);
+}
+
+.floating-label-wrap label {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+  transition: top 120ms ease, font-size 120ms ease, color 120ms ease;
+}
+
+/* Textarea label starts at top, not vertically centered */
+.floating-label-wrap--textarea label {
+  top: 1.25rem;
+  transform: none;
+}
+
+.floating-label-wrap input:focus + label,
+.floating-label-wrap input:not(:placeholder-shown) + label,
+.floating-label-wrap textarea:focus + label,
+.floating-label-wrap textarea:not(:placeholder-shown) + label {
+  top: 0.45rem;
+  font-size: 0.6875rem;
+  color: var(--blue-mid);
+  transform: none;
+}
+
+/* ─── Team code display ──────────────────────────────────────────────────── */
+.team-code {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--blue-primary);
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Caps-lock small tracked text for nav links */
+  .text-caps {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Mono numeral rendering for the stat strip and countdown */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
