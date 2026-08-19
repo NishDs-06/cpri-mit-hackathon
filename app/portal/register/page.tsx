@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import RegistrationFlow from '@/components/portal/RegistrationFlow';
+import CountdownTimer from '@/components/ui/CountdownTimer';
 import type { Team } from '@/types';
 
 /**
@@ -30,16 +31,22 @@ export default function PortalRegisterPage() {
   return (
     <div>
       <div className="mb-10">
-        <p className="font-body text-caps text-blue-mid mb-2">New Registration</p>
+        <p className="text-caps mb-2" style={{ color: 'var(--brown-600)' }}>New Registration</p>
         <h1
-          className="font-display font-bold text-blue-deep"
-          style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)' }}
+          className="font-bold"
+          style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: 'var(--brown-900)' }}
         >
           Register Your Team
         </h1>
-        <p className="font-body text-text-secondary text-sm mt-2">
+        <p className="text-text-secondary text-sm mt-2">
           Complete all steps to register for the CPRI × MIT Bengaluru Hackathon 2026.
         </p>
+      </div>
+
+      {/* Countdown timer — visible in the registration flow context */}
+      <div className="mt-8 mb-8 p-6 rounded-[10px] border" style={{ background: 'var(--surface)', borderColor: 'var(--brown-300)', boxShadow: 'var(--shadow-l1)' }}>
+        <p className="text-caps mb-2" style={{ color: 'var(--brown-600)', fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Event Countdown</p>
+        <CountdownTimer />
       </div>
 
       <RegistrationFlow onComplete={handleComplete} />

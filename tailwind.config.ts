@@ -12,11 +12,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // All 9 design tokens — map to CSS custom properties so they can be
-        // overridden at the :root level without touching Tailwind config.
-        'bg-base':        'var(--bg-base)',
-        'bg-alt':         'var(--bg-alt)',
-        'bg-panel':       'var(--bg-panel)',
+        // ── Phase 4 brown palette ────────────────────────────────────────
+        'brown-900':    'var(--brown-900)',    // espresso headlines
+        'brown-800':    'var(--brown-800)',    // dark brown active
+        'brown-600':    'var(--brown-600)',    // mid brown secondary
+        'brown-300':    'var(--brown-300)',    // light brown hairlines
+        'gold-muted':   'var(--gold-muted)',   // muted gold accent
+        'surface':      'var(--surface)',       // card fill
+
+        // ── Background tokens ────────────────────────────────────────────
+        'bg-base':      'var(--bg-base)',
+        'bg-alt':       'var(--bg-alt)',
+        'bg-panel':     'var(--bg-panel)',
+
+        // ── Legacy blue aliases (kept so old Tailwind utilities still work)
+        // These all resolve to brown equivalents via CSS custom properties.
         'blue-primary':   'var(--blue-primary)',
         'blue-deep':      'var(--blue-deep)',
         'blue-mid':       'var(--blue-mid)',
@@ -27,23 +37,38 @@ const config: Config = {
         'border-hairline':'var(--border-hairline)',
       },
       fontFamily: {
-        // --font-display injected by next/font into <html>
-        display: ['var(--font-display)', 'Georgia', ...defaultTheme.fontFamily.serif],
-        // --font-body injected by next/font into <html>
-        body:    ['var(--font-body)',    'system-ui', ...defaultTheme.fontFamily.sans],
-        // Mono for team codes and stat strip numerals
-        mono:    ['ui-monospace', 'Menlo', 'Consolas', ...defaultTheme.fontFamily.mono],
+        sans: [
+          '-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"',
+          '"Inter"', '"Segoe UI"', 'system-ui',
+          ...defaultTheme.fontFamily.sans,
+        ],
+        // Legacy aliases — both resolve to system sans
+        display: [
+          '-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"',
+          '"Inter"', '"Segoe UI"', 'system-ui',
+          ...defaultTheme.fontFamily.sans,
+        ],
+        body: [
+          '-apple-system', 'BlinkMacSystemFont', '"Inter"',
+          '"Segoe UI"', 'system-ui',
+          ...defaultTheme.fontFamily.sans,
+        ],
+        mono: ['ui-monospace', '"SF Mono"', 'Menlo', 'Consolas', ...defaultTheme.fontFamily.mono],
       },
       borderRadius: {
-        sharp: '4px',
-        firm:  '6px',
+        sharp:  'var(--radius-btn)',   // 8px — buttons
+        firm:   'var(--radius-card)',  // 10px — cards
+        frame:  'var(--radius-frame)', // 6px — frames
       },
       backdropBlur: {
-        nav: '10px',
+        nav: '12px',
       },
       letterSpacing: {
-        caps: '0.12em',
-        wide: '0.06em',
+        caps:     '0.08em',
+        wide:     '0.06em',
+        tight:    '-0.02em',
+        tighter:  '-0.03em',
+        tightest: '-0.04em',
       },
       animation: {
         'hero-drift': 'hero-drift 90s linear infinite',

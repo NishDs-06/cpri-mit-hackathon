@@ -43,8 +43,8 @@ export default function Navbar() {
         // The single backdrop-filter on the site
         'backdrop-blur-nav',
         scrolled
-          ? 'bg-white/75'
-          : 'bg-white/55',
+          ? ''
+          : '',
       )}
       // No border, no shadow — just frosted glass floating over page
     >
@@ -134,7 +134,7 @@ export default function Navbar() {
 
       {/* Mobile menu — slides down below the nav bar */}
       {mobileOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-nav border-t border-border-hairline">
+        <div className="md:hidden backdrop-blur-nav border-t border-border-hairline" style={{ backgroundColor: 'rgba(247,243,234,0.96)' }}>
           <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-5">
             {NAV_LINKS.map((link) => (
               <a

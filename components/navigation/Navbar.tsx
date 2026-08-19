@@ -63,12 +63,11 @@ export default function Navbar() {
         'backdrop-blur-nav',
         // nav-glass adds inner highlight + grain tile (Phase 2 — globals.css)
         'nav-glass relative',
-        scrolled
-          ? 'bg-white/75'
-          : 'bg-white/55',
       )}
       style={{
-        // L3 shadow — strongest in the system, for the floating nav element
+        backgroundColor: scrolled
+          ? 'rgba(247, 243, 234, 0.82)'
+          : 'rgba(247, 243, 234, 0.62)',
         boxShadow: scrolled ? 'var(--shadow-l3)' : 'none',
         transition: 'background-color 300ms, box-shadow 300ms',
       }}
@@ -90,7 +89,7 @@ export default function Navbar() {
           {/* Thin vertical divider */}
           <span
             aria-hidden="true"
-            className="w-px h-5 bg-border-hairline"
+            className="w-px h-5 bg-brown-300"
           />
 
           <VedLogo />
@@ -103,8 +102,8 @@ export default function Navbar() {
               key={link.href}
               href={buildHref(link.href, link.anchor)}
               className="
-                text-caps text-text-secondary
-                hover:text-blue-primary
+                text-caps text-brown-600
+                hover:text-brown-900
                 transition-colors duration-150
               "
             >
@@ -118,12 +117,12 @@ export default function Navbar() {
             className="
               inline-flex items-center justify-center
               px-5 py-2.5
-              bg-blue-primary text-white
+              bg-brown-900 text-white
               rounded-sharp
               text-caps
-              hover:bg-blue-deep
+              hover:bg-brown-800
               transition-colors duration-150
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-primary
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brown-900
             "
           >
             Register
@@ -140,19 +139,19 @@ export default function Navbar() {
         >
           <span
             className={cn(
-              'block w-6 h-[1.5px] bg-blue-deep transition-transform duration-200',
+              'block w-6 h-[1.5px] bg-brown-900 transition-transform duration-200',
               mobileOpen && 'translate-y-[6.5px] rotate-45',
             )}
           />
           <span
             className={cn(
-              'block w-6 h-[1.5px] bg-blue-deep transition-opacity duration-200',
+              'block w-6 h-[1.5px] bg-brown-900 transition-opacity duration-200',
               mobileOpen && 'opacity-0',
             )}
           />
           <span
             className={cn(
-              'block w-6 h-[1.5px] bg-blue-deep transition-transform duration-200',
+              'block w-6 h-[1.5px] bg-brown-900 transition-transform duration-200',
               mobileOpen && '-translate-y-[6.5px] -rotate-45',
             )}
           />
@@ -161,14 +160,17 @@ export default function Navbar() {
 
       {/* Mobile menu — slides down below the nav bar */}
       {mobileOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-nav border-t border-border-hairline">
+        <div 
+          className="md:hidden backdrop-blur-nav border-t border-border-hairline"
+          style={{ backgroundColor: 'rgba(247,243,234,0.96)' }}
+        >
           <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-5">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={buildHref(link.href, link.anchor)}
                 onClick={() => setMobileOpen(false)}
-                className="text-caps text-text-secondary hover:text-blue-primary transition-colors"
+                className="text-caps text-brown-600 hover:text-brown-900 transition-colors"
               >
                 {link.label}
               </Link>
@@ -176,7 +178,7 @@ export default function Navbar() {
             <Link
               href="/portal"
               onClick={() => setMobileOpen(false)}
-              className="inline-block px-5 py-3 bg-blue-primary text-white rounded-sharp text-caps text-center"
+              className="inline-block px-5 py-3 bg-brown-900 text-white rounded-sharp text-caps text-center"
             >
               Register
             </Link>

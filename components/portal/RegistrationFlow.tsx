@@ -139,12 +139,16 @@ function StepIndicator({ current }: { current: RegistrationStep }) {
                 <span
                   className={`
                     w-7 h-7 rounded-full flex items-center justify-center
-                    font-body text-[0.6875rem] font-semibold
+                    text-[0.6875rem] font-semibold
                     border transition-colors duration-200
-                    ${done   ? 'bg-blue-primary border-blue-primary text-white'         : ''}
-                    ${active ? 'bg-white border-blue-primary text-blue-primary'         : ''}
-                    ${!done && !active ? 'bg-white border-border-hairline text-text-secondary' : ''}
+                    ${done   ? 'border-transparent text-white'         : ''}
+                    ${active ? 'border-brown-900 text-brown-900'         : ''}
+                    ${!done && !active ? 'text-brown-600' : ''}
                   `}
+                  style={{
+                    background: done ? 'var(--brown-900)' : active ? 'transparent' : 'var(--surface)',
+                    borderColor: done ? 'var(--brown-900)' : active ? 'var(--brown-900)' : 'var(--brown-300)',
+                  }}
                 >
                   {done ? '✓' : `0${step.num}`}
                 </span>

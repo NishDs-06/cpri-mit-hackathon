@@ -2,116 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design tokens ──────────────────────────────────────────────────────── */
+/* ─── Design tokens — Phase 4: Brown/Beige Duotone ──────────────────────── */
 :root {
-  /* Backgrounds */
-  --bg-base:         #FFFFFF;
-  --bg-alt:          #F5F7FA;
-  --bg-panel:        #FFFFFF;
+  /* ── Backgrounds ─────────────────────────────────────────────────────── */
+  --bg-base:         #F7F3EA;   /* warm beige — main sections               */
+  --bg-alt:          #EDE4D3;   /* deeper warm beige — alternating sections  */
+  --surface:         #F1E9DA;   /* card/panel fill — never pure white        */
+  --bg-panel:        #F1E9DA;   /* alias for surface (used in JSX)           */
 
-  /* Institutional blue palette */
-  --blue-primary:    #0B3D91;
-  --blue-deep:       #06204D;
-  --blue-mid:        #2B6CB0;
-  --blue-tint:       #E8EFFB;
+  /* ── Brown palette (replaces all navy/blue) ──────────────────────────── */
+  --brown-900:       #3C2A1E;   /* espresso — headlines, nav text, footer bg */
+  --brown-800:       #4E3526;   /* dark brown — active states                */
+  --brown-600:       #7A5A3E;   /* mid brown — secondary text, links, icons  */
+  --brown-300:       #C7AE8C;   /* light brown — quiet dividers, hairlines   */
 
-  /* Gold — accent color: stat numerals, timeline markers, CTA hover glow,
-     dividers. Previously restricted to countdown timer only; now used
-     across the landing page for visual richness. */
-  --gold-accent:     #B8862E;
-  /* Lighter gold tint for backgrounds and subtle fills */
-  --gold-tint:       rgba(184, 134, 46, 0.08);
+  /* ── Gold accent (muted, reserved) ──────────────────────────────────────*/
+  /* Use sparingly: countdown digits, active step marker, glyph field.      */
+  /* If gold appears >3-4× per screen, it's competing — pull back.         */
+  --gold-muted:      #A9855A;   /* muted gold — ~30-40% less saturated than old gold */
+  --gold-tint:       rgba(169, 133, 90, 0.10);
 
-  /* Text */
-  --text-primary:    #101828;
-  --text-secondary:  #475467;
+  /* ── Legacy aliases (so old Tailwind utilities still resolve) ───────── */
+  /* Gradually remove these as JSX is updated to brown- variables.         */
+  --blue-primary:    #3C2A1E;   /* → brown-900 */
+  --blue-deep:       #3C2A1E;   /* → brown-900 */
+  --blue-mid:        #7A5A3E;   /* → brown-600 */
+  --blue-tint:       #EDE4D3;   /* → bg-alt */
+  --gold-accent:     #A9855A;   /* → gold-muted */
+  --text-primary:    #3C2A1E;   /* → brown-900 */
+  --text-secondary:  #7A5A3E;   /* → brown-600 */
+  --border-hairline: #C7AE8C;   /* → brown-300 */
 
-  /* Borders */
-  --border-hairline: #E4E7EC;
-
-  /* ─── Elevation shadows (4 explicit levels) ────────────────────────────── */
-  /* L0 = flat (no shadow — default) */
-
-  /* L1 — panels, About cards, contact form
-     Dual shadow: sharp near-shadow for definition + diffuse far-shadow for depth */
+  /* ── Elevation shadows (brown-tinted, strong enough for warm beige bg) ── */
   --shadow-l1:
-    0 1px 2px rgba(16, 24, 40, 0.04),
-    0 20px 40px rgba(16, 24, 40, 0.06);
+    0 1px 3px rgba(60, 42, 30, 0.07),
+    0 20px 40px rgba(60, 42, 30, 0.12);
 
-  /* L2 — raised elements: sign-in card, team-code reveal, timeline cards
-     L1 scaled up + inset top highlight (catches light like a lifted surface) */
   --shadow-l2:
-    0 1px 2px rgba(16, 24, 40, 0.06),
-    0 30px 60px rgba(16, 24, 40, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    0 2px 6px rgba(60, 42, 30, 0.09),
+    0 30px 60px rgba(60, 42, 30, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
 
-  /* L3 — floating: nav bar
-     Strongest shadow + glass blur applied separately via backdrop-filter */
   --shadow-l3:
-    0 2px 4px rgba(16, 24, 40, 0.08),
-    0 40px 80px rgba(16, 24, 40, 0.14);
+    0 2px 8px rgba(60, 42, 30, 0.11),
+    0 40px 80px rgba(60, 42, 30, 0.20);
+
+  /* ── Corner radii ─────────────────────────────────────────────────────── */
+  --radius-card:   10px;
+  --radius-btn:    8px;
+  --radius-frame:  6px;
 }
 
 /* ─── Base resets ────────────────────────────────────────────────────────── */
 @layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
+  *, *::before, *::after { box-sizing: border-box; }
 
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: var(--text-primary);
+    color: var(--brown-900);
     background-color: var(--bg-base);
   }
 
-  /* Body font is the grotesk; display is applied per-element */
   body {
-    font-family: var(--font-body), 'IBM Plex Sans', system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display",
+      "Inter", "Segoe UI", system-ui, sans-serif;
     font-size: 1rem;
     line-height: 1.6;
+    background-color: var(--bg-base);
+    color: var(--brown-900);
   }
 
-  /* Heading base — all headings default to the display serif */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display), 'Source Serif 4', Georgia, serif;
-    line-height: 1.15;
-    color: var(--text-primary);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display",
+      "Inter", "Segoe UI", system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    color: var(--brown-900);
   }
+  h1 { letter-spacing: -0.04em; line-height: 1.06; }
+  h2 { letter-spacing: -0.03em; }
+  h3 { letter-spacing: -0.02em; }
 
-  /* Smooth anchor scrolling accounts for the fixed navbar height (72px) */
-  :target {
-    scroll-margin-top: 80px;
-  }
+  :target { scroll-margin-top: 80px; }
 }
 
-/* ─── Glass nav — inner highlight + grain ────────────────────────────────── */
+/* ─── Glass nav ──────────────────────────────────────────────────────────── */
 /*
- * The nav glass uses three layers stacked via pseudo-elements:
- * 1. Base: backdrop-blur + rgba background (Tailwind class)
- * 2. ::before — 1px inner top highlight line (catches light like real glass)
- * 3. ::after  — SVG noise tile at ~2.5% opacity (makes it read as material,
- *               not just a CSS filter)
+ * IMPORTANT: The nav uses a semi-transparent BEIGE fill, not solid white.
+ * rgba(247,243,234,...) = --bg-base at reduced opacity.
+ * backdrop-filter: blur(12px) creates the frosted-glass effect.
  *
- * The grain tile is a 64×64 repeating SVG turbulence pattern.
- * Near-zero perf cost — pure CSS, no JS.
+ * Common failure mode: a solid bg-* utility applied AFTER this class
+ * silently cancels the transparency. The Navbar must use inline style
+ * for backgroundColor, not a Tailwind bg-* class, to avoid cascade conflicts.
  */
+.nav-glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
 .nav-glass::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 1px;
-  /* Faint white top-edge highlight — visible only on dark backgrounds */
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.6) 20%,
-    rgba(255, 255, 255, 0.6) 80%,
+    rgba(255,255,255,0.45) 20%,
+    rgba(255,255,255,0.45) 80%,
     transparent 100%
   );
   pointer-events: none;
@@ -121,34 +125,26 @@
   content: '';
   position: absolute;
   inset: 0;
-  /* Inline SVG noise tile — 64×64 base64. This is what distinguishes
-     glass from a plain blur: real glass has surface micro-texture. */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 64px 64px;
   background-repeat: repeat;
-  opacity: 0.025; /* 2.5% — reads as material texture, not visible noise */
+  opacity: 0.025;
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
 /* ─── Floating label inputs ──────────────────────────────────────────────── */
-/*
- * CSS-only floating label: label starts inside the input, floats above
- * when the input is focused or has a value (:not(:placeholder-shown)).
- */
-.floating-label-wrap {
-  position: relative;
-}
+.floating-label-wrap { position: relative; }
 
 .floating-label-wrap input,
 .floating-label-wrap textarea {
   width: 100%;
   padding: 1.375rem 0.875rem 0.5rem;
-  border: 1px solid var(--border-hairline);
-  border-radius: 4px;
-  background: var(--bg-panel);
-  color: var(--text-primary);
-  font-family: var(--font-body), system-ui, sans-serif;
+  border: 1px solid var(--brown-300);
+  border-radius: var(--radius-frame);
+  background: var(--surface);
+  color: var(--brown-900);
+  font-family: inherit;
   font-size: 0.9375rem;
   transition: border-color 150ms ease;
   outline: none;
@@ -156,7 +152,7 @@
 
 .floating-label-wrap input:focus,
 .floating-label-wrap textarea:focus {
-  border-color: var(--blue-mid);
+  border-color: var(--brown-600);
 }
 
 .floating-label-wrap label {
@@ -164,14 +160,13 @@
   left: 0.875rem;
   top: 50%;
   transform: translateY(-50%);
-  font-family: var(--font-body), system-ui, sans-serif;
+  font-family: inherit;
   font-size: 0.9375rem;
-  color: var(--text-secondary);
+  color: var(--brown-600);
   pointer-events: none;
   transition: top 120ms ease, font-size 120ms ease, color 120ms ease;
 }
 
-/* Textarea label starts at top, not vertically centered */
 .floating-label-wrap--textarea label {
   top: 1.25rem;
   transform: none;
@@ -183,25 +178,20 @@
 .floating-label-wrap textarea:not(:placeholder-shown) + label {
   top: 0.45rem;
   font-size: 0.6875rem;
-  color: var(--blue-mid);
+  color: var(--brown-600);
   transform: none;
 }
 
 /* ─── Team code display ──────────────────────────────────────────────────── */
 .team-code {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--blue-primary);
+  color: var(--brown-900);
 }
 
 /* ─── Rolling counter digit slot ─────────────────────────────────────────── */
-/*
- * Each digit is a vertical strip that slides up/down on value change.
- * The clip container hides all but the visible digit.
- * On prefers-reduced-motion: no transition — digit snaps to new value.
- */
 .rolling-digit-clip {
   display: inline-block;
   overflow: hidden;
@@ -215,48 +205,73 @@
   will-change: transform;
 }
 
-/* ─── Stat strip — instrument-panel "departure board" frame ──────────────── */
-/*
- * Each stat value in the hero strip sits inside a bordered display frame
- * evoking an instrument readout / departure board. Gold digits pop against
- * the neutral frame. The frame is intentionally austere — no glow, no gradient,
- * just a hairline border + subtle inner shadow.
- */
+/* ─── Stat frame ─────────────────────────────────────────────────────────── */
 .stat-frame {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-hairline);
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  background: var(--bg-base);
-  /* Subtle inner shadow gives the "recessed panel" look */
-  box-shadow: inset 0 1px 2px rgba(16, 24, 40, 0.04);
+  column-gap: 2px;
+  border: 1px solid var(--brown-300);
+  border-radius: var(--radius-frame);
+  padding: 0.3rem 0.625rem;
+  background: var(--surface);
+  box-shadow: inset 0 1px 2px rgba(60, 42, 30, 0.06);
 }
 
 .stat-frame .stat-value {
-  color: var(--gold-accent);
-  font-family: var(--font-display), Georgia, serif;
+  color: var(--gold-muted);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
   line-height: 1;
 }
 
-/* ─── Timeline — scroll-driven reveal & connector ─────────────────────────── */
+/* ─── Section eyebrow gold rule ──────────────────────────────────────────── */
 /*
- * Timeline items use two-part animation:
- * 1. Each card fades+slides up when it enters viewport (.timeline-card)
- * 2. The connector line "draws" downward as the user scrolls (.timeline-connector)
+ * A 2px gold-muted bar sits below every section eyebrow label.
+ * This is one of the 3 mandatory non-numeral uses of --gold-muted.
+ * Usage: wrap eyebrow area in .eyebrow-group, add a span.eyebrow-rule sibling.
+ */
+.eyebrow-rule {
+  display: block;
+  height: 2px;
+  width: 2rem;
+  background: var(--gold-muted);
+  border-radius: 1px;
+  margin-top: 5px;
+}
+
+/* ─── Primary CTA — pressed state ────────────────────────────────────────── */
+.btn-primary {
+  transition: box-shadow 100ms ease, transform 100ms ease;
+  border-radius: var(--radius-btn);
+}
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(60, 42, 30, 0.18) !important;
+}
+
+/* ─── Timeline ───────────────────────────────────────────────────────────── */
+/*
+ * REGRESSION FIX: Cards start VISIBLE (opacity: 1) and animate to the
+ * revealed state immediately. The IntersectionObserver adds 'is-visible'
+ * which is a no-op for opacity but enables the transition-delay cascade.
+ * This ensures cards are never invisible if JS is slow or Observer misses them.
  *
- * The connector is implemented as a CSS scaleY transform on a thin absolute
- * div, driven by JS (IntersectionObserver calculates scroll progress and sets
- * a CSS custom property --progress). Gold fill on the active portion.
+ * The slide-in animation is progressive enhancement via 'will-animate' class
+ * applied by JS before the Observer fires.
  */
 .timeline-card {
+  /* Cards are visible by default — no opacity:0 flash on slow JS */
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+/* JS adds this class before connecting the observer — opts into animation */
+.timeline-card.will-animate {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 600ms ease, transform 600ms ease;
 }
 
 .timeline-card.is-visible {
@@ -264,181 +279,134 @@
   transform: translateY(0);
 }
 
-/* The filled (gold) portion of the connector line — grows from top via scaleY */
+/* Gold left-border on active/visible timeline cards */
+.timeline-card-inner {
+  border-left: 3px solid transparent;
+  transition: border-color 400ms ease 300ms;
+}
+
+.timeline-card.is-visible .timeline-card-inner {
+  border-left-color: var(--gold-muted);
+}
+
+/* Connector */
 .timeline-connector-fill {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background: var(--gold-accent);
+  left: 0; top: 0;
+  width: 2px; height: 100%;
+  background: var(--gold-muted);
   transform-origin: top center;
-  /* --progress is set by JS (0 to 1) */
   transform: scaleY(var(--progress, 0));
   transition: transform 100ms linear;
 }
 
-/* The background (unfilled) connector track */
 .timeline-connector-track {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background: var(--border-hairline);
+  left: 0; top: 0;
+  width: 2px; height: 100%;
+  background: var(--brown-300);
 }
 
-/* Gold step marker — the circle at each timeline node */
+/* Timeline markers */
 .timeline-marker {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.5rem; height: 2.5rem;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-body), system-ui, sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  position: relative; z-index: 10; flex-shrink: 0;
   transition: background-color 400ms ease, border-color 400ms ease, color 400ms ease;
 }
 
-/* Default: unfilled marker */
 .timeline-marker--default {
   background: var(--bg-base);
-  border: 2px solid var(--border-hairline);
-  color: var(--text-secondary);
+  border: 2px solid var(--brown-300);
+  color: var(--brown-600);
 }
 
-/* Active/filled: gold marker */
 .timeline-marker--active {
-  background: var(--gold-accent);
-  border: 2px solid var(--gold-accent);
+  background: var(--gold-muted);
+  border: 2px solid var(--gold-muted);
   color: #FFFFFF;
 }
 
-/* ─── Timeline item (legacy — kept for compatibility) ─────────────────────── */
-.timeline-item {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 500ms ease, transform 500ms ease;
-}
+/* Legacy */
+.timeline-item { opacity: 1; transform: none; }
+.timeline-item.is-visible { opacity: 1; transform: none; }
 
-.timeline-item.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ─── Gradient divider (About section) ───────────────────────────────────── */
-/* Center color is now gold accent — creates a visible gold accent line
-   between the organizer grid and the "Together" section. */
+/* ─── Gradient divider ───────────────────────────────────────────────────── */
 .gradient-divider {
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--border-hairline) 15%,
-    var(--gold-accent) 50%,
-    var(--border-hairline) 85%,
+    var(--brown-300) 15%,
+    var(--gold-muted) 50%,
+    var(--brown-300) 85%,
     transparent 100%
   );
 }
 
-/* ─── Gold flash — team-code reveal animation ────────────────────────────── */
-/*
- * Brief gold glow that fires once when the team code is revealed.
- * Uses box-shadow to create the flash, which fades out over 800ms.
- */
+/* ─── Gold flash — team-code reveal ─────────────────────────────────────── */
 @keyframes gold-flash {
-  0% {
-    box-shadow: 0 0 0 0 rgba(184, 134, 46, 0.5);
-    transform: scale(0.95);
-  }
-  30% {
-    box-shadow: 0 0 30px 8px rgba(184, 134, 46, 0.3);
-    transform: scale(1);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(184, 134, 46, 0);
-    transform: scale(1);
-  }
+  0%   { box-shadow: 0 0 0 0 rgba(169,133,90,0.5); transform: scale(0.95); }
+  30%  { box-shadow: 0 0 30px 8px rgba(169,133,90,0.3); transform: scale(1); }
+  100% { box-shadow: 0 0 0 0 rgba(169,133,90,0); transform: scale(1); }
 }
-
 .gold-flash-reveal {
   animation: gold-flash 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ─── Reduced motion — freeze ALL animations site-wide ──────────────────── */
-/*
- * This is the real static fallback — not just a shorter duration.
- * prefers-reduced-motion users get no transforms, no transitions, no canvas.
- */
+/* ─── Elevation-2 surface gradient ──────────────────────────────────────── */
+/* Barely-perceptible top-lighter gradient simulates a glossy surface. */
+.elevation-l2-surface {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.0) 100%
+  ), var(--surface);
+}
+
+/* ─── Countdown display module ───────────────────────────────────────────── */
+.countdown-module {
+  background: var(--surface);
+  border: 1px solid var(--brown-300);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-l1);
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.25rem;
+  padding: 1rem 1.5rem;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
-  /* Timeline items show immediately without animation */
-  .timeline-item {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* Timeline cards show immediately without animation */
-  .timeline-card {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* Timeline connector shows at full height — no progressive draw */
-  .timeline-connector-fill {
-    transform: scaleY(1) !important;
-    transition: none;
-  }
-
-  /* Rolling counter snaps without slide */
-  .rolling-digit-strip {
-    transition: none;
-  }
-
-  /* Nav grain off — SVG noise is visual-only, no information lost */
-  .nav-glass::after {
-    display: none;
-  }
-
-  /* Gold flash just appears without animation */
-  .gold-flash-reveal {
-    animation: none;
-    box-shadow: none;
-    transform: scale(1);
-  }
+  .timeline-card { opacity: 1; transform: none; }
+  .timeline-card.will-animate { opacity: 1; transform: none; }
+  .timeline-card-inner { border-left-color: var(--gold-muted); }
+  .timeline-connector-fill { transform: scaleY(1) !important; transition: none; }
+  .rolling-digit-strip { transition: none; }
+  .nav-glass::after { display: none; }
+  .gold-flash-reveal { animation: none; box-shadow: none; transform: scale(1); }
 }
 
 /* ─── Utilities ──────────────────────────────────────────────────────────── */
 @layer utilities {
-  /* Caps-lock small tracked text for nav links */
   .text-caps {
     font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-
-  /* Mono numeral rendering for the stat strip and countdown */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
-
-  /* Elevation utility classes */
   .elevation-l1 { box-shadow: var(--shadow-l1); }
   .elevation-l2 { box-shadow: var(--shadow-l2); }
   .elevation-l3 { box-shadow: var(--shadow-l3); }

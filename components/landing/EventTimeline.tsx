@@ -63,6 +63,12 @@ export default function EventTimeline() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const items = listRef.current?.querySelectorAll('.timeline-card');
 
+    // Progressive enhancement: mark cards for animation before observing
+    // Cards start visible by default (CSS); we opt them into slide-in here
+    if (!prefersReducedMotion) {
+      items?.forEach((item) => item.classList.add('will-animate'));
+    }
+
     if (prefersReducedMotion) {
       items?.forEach((item) => {
         item.classList.add('is-visible');
@@ -135,14 +141,17 @@ export default function EventTimeline() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         {/* Section header */}
         <div className="mb-16 lg:mb-20 max-w-2xl">
-          <p className="font-body text-caps text-blue-mid mb-3 flex items-center gap-3">
-            <span className="block w-8 h-px bg-blue-mid" aria-hidden="true" />
-            Event Timeline
-          </p>
+          <div className="mb-4">
+            <p className="text-caps flex items-center gap-3 mb-2" style={{ color: 'var(--brown-600)' }}>
+              <span className="block w-6 h-px" style={{ background: 'var(--brown-600)' }} aria-hidden="true" />
+              Event Timeline
+            </p>
+            <span className="eyebrow-rule" aria-hidden="true" />
+          </div>
           <h2
             id="timeline-heading"
-            className="font-display font-bold text-blue-deep"
-            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
+            className="font-bold"
+            style={{ color: 'var(--brown-900)', fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.03em' }}
           >
             Key dates
           </h2>
@@ -178,20 +187,31 @@ export default function EventTimeline() {
                 />
 
                 {/* Card Content */}
-                <div className="elevation-l2 bg-bg-panel rounded-firm p-6 lg:p-8 flex-1">
+                <div 
+                  style={{ background: 'var(--surface)' }}
+                  className="timeline-card-inner elevation-l2 rounded-[10px] p-6 lg:p-8 flex-1"
+                >
                   <p
-                    className="font-display font-bold text-gold-accent mb-2"
-                    style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', lineHeight: 1 }}
+                    className="font-bold mb-2"
+                    style={{
+                      fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+                      lineHeight: 1,
+                      color: 'var(--gold-muted)',
+                      letterSpacing: '-0.03em',
+                    }}
                   >
                     {event.step}
                   </p>
-                  <h3 className="font-display font-semibold text-blue-deep mb-2 text-xl lg:text-2xl">
+                  <h3
+                    className="font-semibold mb-2 text-xl lg:text-2xl"
+                    style={{ letterSpacing: '-0.02em', color: 'var(--brown-900)' }}
+                  >
                     {event.label}
                   </h3>
-                  <p className="font-body text-sm font-medium text-blue-mid mb-4 tabular-nums">
+                  <p className="text-sm font-medium mb-4 tabular-nums" style={{ color: 'var(--brown-600)' }}>
                     {event.date}
                   </p>
-                  <p className="font-body text-text-secondary text-[0.9375rem] lg:text-base leading-relaxed">
+                  <p className="text-text-secondary text-[0.9375rem] lg:text-base leading-relaxed">
                     {event.description}
                   </p>
                 </div>

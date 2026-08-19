@@ -63,10 +63,7 @@ export default function CountdownTimer() {
   if (timeLeft === 'closed') {
     return (
       <div className="text-center">
-        <p
-          className="font-display font-bold text-2xl tracking-wide"
-          style={{ color: 'var(--gold-accent)' }}
-        >
+        <p style={{ color: 'var(--gold-muted)' }} className="font-bold text-2xl tracking-wide">
           Registration Closed
         </p>
         <p className="text-text-secondary text-sm mt-1 font-body">
@@ -84,13 +81,8 @@ export default function CountdownTimer() {
     <div role="timer" aria-live="off" aria-label="Time remaining until registration closes">
       {/* Display module — bordered instrument frame */}
       <div
-        className="
-          inline-flex items-end gap-1 sm:gap-2
-          border border-border-hairline rounded-sharp
-          px-6 sm:px-10 py-5
-          bg-bg-base
-        "
-        style={{ boxShadow: 'var(--shadow-l1)' }}
+        className="inline-flex items-end gap-1 sm:gap-2 border rounded-[10px] px-6 sm:px-10 py-5"
+        style={{ background: 'var(--surface)', borderColor: 'var(--brown-300)', boxShadow: 'var(--shadow-l1)' }}
       >
         <DisplayUnit value={timeLeft.days}    label="Days"    />
         <DisplaySeparator />
@@ -101,9 +93,9 @@ export default function CountdownTimer() {
         <DisplayUnit value={timeLeft.seconds} label="Seconds" />
       </div>
 
-      <p className="text-center text-text-secondary font-body text-sm mt-5">
+      <p className="text-center text-sm mt-5" style={{ color: 'var(--brown-600)' }}>
         Registration closes on{' '}
-        <span className="font-medium text-text-primary">
+        <span className="font-medium" style={{ color: 'var(--brown-900)' }}>
           {REGISTRATION_DEADLINE.toLocaleDateString('en-IN', {
             day: 'numeric',
             month: 'long',
@@ -120,8 +112,7 @@ export default function CountdownTimer() {
 function DisplayUnit({ value, label }: { value: number; label: string }) {
   const digitStyle: React.CSSProperties = {
     fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
-    color: 'var(--gold-accent)',
-    fontFamily: 'var(--font-display), Georgia, serif',
+    color: 'var(--gold-muted)',
     fontWeight: 700,
     lineHeight: 1,
   };
@@ -134,7 +125,8 @@ function DisplayUnit({ value, label }: { value: number; label: string }) {
         style={digitStyle}
         className="tabular-nums"
       />
-      <span className="font-body text-[0.6875rem] font-medium tracking-caps text-text-secondary uppercase mt-2">
+      <span className="text-[0.6875rem] font-medium tracking-[0.08em] uppercase mt-2"
+        style={{ color: 'var(--brown-600)' }}>
         {label}
       </span>
     </div>
@@ -150,7 +142,7 @@ function DisplaySeparator() {
       className="font-display font-bold pb-7 select-none"
       style={{
         fontSize: 'clamp(2rem, 4vw, 3rem)',
-        color: 'var(--gold-accent)',
+        color: 'var(--gold-muted)',
         opacity: 0.5,
         lineHeight: 1,
       }}
@@ -165,13 +157,9 @@ function DisplaySeparator() {
 function TimerPlaceholder() {
   return (
     <div
-      className="
-        inline-flex items-end gap-1 sm:gap-2
-        border border-border-hairline rounded-sharp
-        px-6 sm:px-10 py-5
-        bg-bg-base
-      "
+      className="inline-flex items-end gap-1 sm:gap-2 border rounded-[10px] px-6 sm:px-10 py-5"
       aria-hidden="true"
+      style={{ background: 'var(--surface)', borderColor: 'var(--brown-300)' }}
     >
       {['--', ':', '--', ':', '--', ':', '--'].map((v, i) => (
         <span
@@ -179,7 +167,7 @@ function TimerPlaceholder() {
           className="font-display font-bold tabular-nums opacity-30"
           style={{
             fontSize: v === ':' ? 'clamp(2rem, 4vw, 3rem)' : 'clamp(2.25rem, 5vw, 3.5rem)',
-            color: 'var(--gold-accent)',
+            color: 'var(--gold-muted)',
             lineHeight: 1,
             paddingBottom: v === ':' ? '1.75rem' : undefined,
             minWidth: v === ':' ? undefined : '4rem',

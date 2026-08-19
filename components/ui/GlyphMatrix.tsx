@@ -4,16 +4,13 @@ import { useEffect, useRef } from 'react';
 import { GLYPH_MATRIX_CONFIG } from '@/lib/design-tokens';
 
 /**
- * GlyphMatrix — MagicUI pattern, canvas-only, no WebGL, no Three.js.
+ * GlyphMatrix — engineering-symbol field, canvas-only, no WebGL.
  *
- * Renders a grid of mutating ASCII-range characters at very low opacity
- * to create a living, breathing background texture behind the hero section.
+ * Phase 4: Recolored to brown/gold-muted duotone.
+ * Primary glyphs (#7A5A3E brown-600), 1/8 cells in gold-muted (#A9855A).
+ * Opacity: 9% in hero — visible on a careful second look.
  *
- * Config values are defined in lib/design-tokens.ts (mutationRate, cellSize,
- * opacity, color) so they can be tuned without touching this file.
- *
- * prefers-reduced-motion: The canvas is never started — a static
- * bg-blue-tint div is rendered instead.
+ * prefers-reduced-motion: canvas not started, static bg renders instead.
  */
 export function GlyphMatrix() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,22 +18,19 @@ export function GlyphMatrix() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    // Respect prefers-reduced-motion — static background, no canvas animation
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const { cellSize, mutationRate, color } = GLYPH_MATRIX_CONFIG;
+    const {
+      cellSize, mutationRate, color, goldColor, goldFraction,
+      glyphs,
+    } = GLYPH_MATRIX_CONFIG;
 
-    // Characters to draw — power/electrical engineering ASCII range + common
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~∿⊕⊗±∑√∫∂∇⌀◈◉●○□△▽';
-
-    let cols: number;
-    let rows: number;
+    let cols: number, rows: number;
     let grid: string[][];
+    let goldGrid: boolean[][];
     let animId: number;
 
     const resize = () => {
@@ -44,26 +38,28 @@ export function GlyphMatrix() {
       canvas.height = canvas.offsetHeight;
       cols = Math.ceil(canvas.width / cellSize);
       rows = Math.ceil(canvas.height / cellSize);
-      // (Re)initialize grid with random characters
       grid = Array.from({ length: rows }, () =>
         Array.from({ length: cols }, () =>
-          chars[Math.floor(Math.random() * chars.length)]
+          glyphs[Math.floor(Math.random() * glyphs.length)]
         )
+      );
+      goldGrid = Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => Math.random() < goldFraction)
       );
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = `${cellSize * 0.65}px ui-monospace, Menlo, Consolas, monospace`;
-      ctx.fillStyle = color;
+      ctx.font = `${cellSize * 0.7}px ui-monospace, "SF Mono", Menlo, Consolas, monospace`;
       ctx.textBaseline = 'top';
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
-          // Probabilistically mutate a cell each frame
-          if (Math.random() < mutationRate) {
-            grid[r][c] = chars[Math.floor(Math.random() * chars.length)];
+          const isGold = goldGrid[r][c];
+          if (Math.random() < (isGold ? mutationRate * 0.3 : mutationRate)) {
+            grid[r][c] = glyphs[Math.floor(Math.random() * glyphs.length)];
           }
+          ctx.fillStyle = isGold ? goldColor : color;
           ctx.fillText(grid[r][c], c * cellSize, r * cellSize);
         }
       }
