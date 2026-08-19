@@ -24,6 +24,28 @@
 
   /* Borders */
   --border-hairline: #E4E7EC;
+
+  /* ─── Elevation shadows (4 explicit levels) ────────────────────────────── */
+  /* L0 = flat (no shadow — default) */
+
+  /* L1 — panels, About cards, contact form
+     Dual shadow: sharp near-shadow for definition + diffuse far-shadow for depth */
+  --shadow-l1:
+    0 1px 2px rgba(16, 24, 40, 0.04),
+    0 20px 40px rgba(16, 24, 40, 0.06);
+
+  /* L2 — raised elements: sign-in card, team-code reveal
+     L1 scaled up + inset top highlight (catches light like a lifted surface) */
+  --shadow-l2:
+    0 1px 2px rgba(16, 24, 40, 0.06),
+    0 30px 60px rgba(16, 24, 40, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* L3 — floating: nav bar
+     Strongest shadow + glass blur applied separately via backdrop-filter */
+  --shadow-l3:
+    0 2px 4px rgba(16, 24, 40, 0.08),
+    0 40px 80px rgba(16, 24, 40, 0.14);
 }
 
 /* ─── Base resets ────────────────────────────────────────────────────────── */
@@ -62,37 +84,47 @@
   }
 }
 
-/* ─── Hero background drift animation ───────────────────────────────────── */
+/* ─── Glass nav — inner highlight + grain ────────────────────────────────── */
 /*
- * The SVG grid pattern is rendered at 200% width. The keyframe animates
- * translateX from 0 → -50% so the repeat point is perfectly seamless.
- * will-change: transform promotes this to its own GPU compositing layer,
- * keeping the main thread free. The animation is 90s / linear / infinite
- * at very low opacity — barely perceptible, adds texture without distraction.
+ * The nav glass uses three layers stacked via pseudo-elements:
+ * 1. Base: backdrop-blur + rgba background (Tailwind class)
+ * 2. ::before — 1px inner top highlight line (catches light like real glass)
+ * 3. ::after  — SVG noise tile at ~2.5% opacity (makes it read as material,
+ *               not just a CSS filter)
+ *
+ * The grain tile is a 64×64 repeating SVG turbulence pattern.
+ * Near-zero perf cost — pure CSS, no JS.
  */
-@keyframes hero-drift {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+.nav-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  /* Faint white top-edge highlight — visible only on dark backgrounds */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 20%,
+    rgba(255, 255, 255, 0.6) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
-.hero-bg-drift {
-  animation: hero-drift 90s linear infinite;
-  will-change: transform;
-}
-
-/* ─── Reduced motion — freeze ALL animations site-wide ──────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .hero-bg-drift {
-    animation: none;
-  }
+.nav-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Inline SVG noise tile — 64×64 base64. This is what distinguishes
+     glass from a plain blur: real glass has surface micro-texture. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 64px 64px;
+  background-repeat: repeat;
+  opacity: 0.025; /* 2.5% — reads as material texture, not visible noise */
+  pointer-events: none;
+  mix-blend-mode: overlay;
 }
 
 /* ─── Floating label inputs ──────────────────────────────────────────────── */
@@ -160,6 +192,81 @@
   color: var(--blue-primary);
 }
 
+/* ─── Rolling counter digit slot ─────────────────────────────────────────── */
+/*
+ * Each digit is a vertical strip that slides up/down on value change.
+ * The clip container hides all but the visible digit.
+ * On prefers-reduced-motion: no transition — digit snaps to new value.
+ */
+.rolling-digit-clip {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.rolling-digit-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* ─── Timeline scroll reveal ──────────────────────────────────────────────── */
+.timeline-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.timeline-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Gradient divider (About section) ───────────────────────────────────── */
+.gradient-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--border-hairline) 20%,
+    var(--blue-mid) 50%,
+    var(--border-hairline) 80%,
+    transparent 100%
+  );
+}
+
+/* ─── Reduced motion — freeze ALL animations site-wide ──────────────────── */
+/*
+ * This is the real static fallback — not just a shorter duration.
+ * prefers-reduced-motion users get no transforms, no transitions, no canvas.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Timeline items show immediately without animation */
+  .timeline-item {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Rolling counter snaps without slide */
+  .rolling-digit-strip {
+    transition: none;
+  }
+
+  /* Nav grain off — SVG noise is visual-only, no information lost */
+  .nav-glass::after {
+    display: none;
+  }
+}
+
 /* ─── Utilities ──────────────────────────────────────────────────────────── */
 @layer utilities {
   /* Caps-lock small tracked text for nav links */
@@ -175,4 +282,9 @@
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
+
+  /* Elevation utility classes */
+  .elevation-l1 { box-shadow: var(--shadow-l1); }
+  .elevation-l2 { box-shadow: var(--shadow-l2); }
+  .elevation-l3 { box-shadow: var(--shadow-l3); }
 }

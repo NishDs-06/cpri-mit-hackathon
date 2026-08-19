@@ -4,12 +4,13 @@ import { AuthProvider } from '@/context/AuthContext';
 import '@/app/globals.css';
 
 export const metadata: Metadata = {
-  title: 'PowerGrid Hackathon 2026 | CPRI × VED',
+  title: 'CPRI × MIT Bengaluru Hackathon | 10–11 Oct 2026',
   description:
-    'A flagship engineering hackathon by the Central Power Research Institute (CPRI) and VED. Build real solutions for India\u2019s power grid. Register now.',
+    'A flagship engineering hackathon by the Central Power Research Institute (CPRI), MIT Bengaluru, and VED. Engineer solutions for India\u2019s power grid. Register your team now.',
   keywords: [
     'hackathon',
     'CPRI',
+    'MIT Bengaluru',
     'VED',
     'power grid',
     'energy',
@@ -18,9 +19,9 @@ export const metadata: Metadata = {
     '2026',
   ],
   openGraph: {
-    title: 'PowerGrid Hackathon 2026 | CPRI × VED',
+    title: 'CPRI × MIT Bengaluru Hackathon | 10–11 Oct 2026',
     description:
-      'A flagship engineering hackathon by CPRI and VED. Register your team now.',
+      'A flagship engineering hackathon by CPRI, MIT Bengaluru, and VED. Register your team now.',
     type: 'website',
   },
 };

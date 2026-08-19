@@ -1,34 +1,45 @@
-import Navbar   from '@/components/nav/Navbar';
-import Hero      from '@/components/sections/Hero';
-import About     from '@/components/sections/About';
-import Register  from '@/components/sections/Register';
-import Contact   from '@/components/sections/Contact';
+import Navbar        from '@/components/navigation/Navbar';
+import Hero           from '@/components/landing/Hero';
+import AboutHackathon from '@/components/landing/AboutHackathon';
+import Tracks         from '@/components/landing/Tracks';
+import EventTimeline  from '@/components/landing/EventTimeline';
+import TeamInformation from '@/components/landing/TeamInformation';
+import Contact        from '@/components/landing/Contact';
+import Footer         from '@/components/landing/Footer';
 
 /**
- * Single-page assembly.
+ * Public landing page — single scrolling page.
  *
- * Section order: Hero → About → Register → Contact/Footer
+ * Section order (per spec):
+ *  1. Hero            — event name, dates, location, mission line, CTAs
+ *  2. About           — CPRI + MIT Bengaluru + VED editorial
+ *  3. Tracks          — 01/02/03 numbered sections (placeholder content)
+ *  4. Timeline        — scroll-driven vertical timeline
+ *  5. Team Information — eligibility, team size, what's needed
+ *  6. Contact + Footer
  *
- * Nav anchors link to:
- *  #hero     — top of page / hero section
- *  #about    — About CPRI & VED
- *  #register — Countdown + registration/portal flow
- *  #contact  — Contact form
+ * Nav anchors:
+ *  #about     — About section
+ *  #tracks    — Challenge tracks
+ *  #timeline  — Event timeline
+ *  #team-info — Team information
+ *  #contact   — Contact section
  *
- * The Navbar is fixed/sticky and floats above all sections via z-50.
- * Each section accounts for the 72px navbar height via scroll-margin-top
- * defined in globals.css (:target { scroll-margin-top: 80px }).
+ * Registration → /portal (not inline on this page)
  */
 export default function HomePage() {
   return (
     <>
       <Navbar />
       <main>
-        <Hero     />
-        <About    />
-        <Register />
-        <Contact  />
+        <Hero />
+        <AboutHackathon />
+        <Tracks />
+        <EventTimeline />
+        <TeamInformation />
+        <Contact />
       </main>
+      <Footer />
     </>
   );
 }
