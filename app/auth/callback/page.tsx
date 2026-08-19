@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyMagicLinkToken } from '@/lib/api/auth';
 import { useAuth } from '@/context/AuthContext';
@@ -11,6 +11,9 @@ type CallbackState = 'verifying' | 'success' | 'expired' | 'invalid' | 'error';
 
 /**
  * Magic link callback handler.
+ *
+ * Outer wrapper provides the Suspense boundary required by Next.js 15 App Router
+ * for pages that use useSearchParams() during static generation.
  *
  * Flow:
  *  1. Extract token from URL search params
@@ -28,7 +31,26 @@ type CallbackState = 'verifying' | 'success' | 'expired' | 'invalid' | 'error';
  * SECURITY: The token is read from the URL only to extract it; it is then sent
  * in the POST body. It is NOT forwarded in any URL or Referer header to the backend.
  */
-export default function MagicLinkCallbackHandler() {
+export default function MagicLinkCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-bg-base flex items-center justify-center px-6">
+          <div className="w-full max-w-[440px] text-center py-8">
+            <div className="inline-block w-8 h-8 border-2 border-border-hairline border-t-blue-primary rounded-full animate-spin mb-6" />
+            <p className="font-body text-text-secondary text-sm">
+              Verifying your magic link…
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <MagicLinkCallbackHandler />
+    </Suspense>
+  );
+}
+
+function MagicLinkCallbackHandler() {
   const searchParams   = useSearchParams();
   const router         = useRouter();
   const { refreshSession } = useAuth();

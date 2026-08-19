@@ -1,3 +1,6 @@
+'use client';
+
+import { HoverLiftButton } from '@/components/ui/TiltCard';
 import { TEAM_INFO } from '@/lib/constants';
 
 /**
@@ -155,25 +158,27 @@ export default function TeamInformation() {
               <p className="font-body text-text-secondary text-sm mb-4">
                 Ready to register? Create your team on the portal.
               </p>
-              <a
-                href="/portal"
-                className="
-                  inline-flex items-center gap-2
-                  bg-blue-primary text-white
-                  px-6 py-3.5
-                  rounded-sharp
-                  font-body font-medium
-                  text-[0.9375rem]
-                  hover:bg-blue-deep
-                  transition-colors duration-150
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-primary
-                "
-              >
-                Register Your Team
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
+              <HoverLiftButton>
+                <a
+                  href="/portal"
+                  className="
+                    inline-flex items-center gap-2
+                    bg-blue-primary text-white
+                    px-6 py-3.5
+                    rounded-sharp
+                    font-body font-medium
+                    text-[0.9375rem]
+                    hover:bg-blue-deep
+                    transition-colors duration-150
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-primary
+                  "
+                >
+                  Register Your Team
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </HoverLiftButton>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import ProfileForm from '@/components/auth/ProfileForm';
 import TeamPanel from '@/components/auth/TeamPanel';
+import { HoverLiftButton } from '@/components/ui/TiltCard';
 import type { Team } from '@/types';
 
 type RegistrationStep = 1 | 2 | 3 | 4;
@@ -69,13 +70,13 @@ export default function RegistrationFlow({ onComplete }: RegistrationFlowProps) 
           <div>
             <StepHeader step={3} />
             {/* TODO: Implement member invitation step when backend invite API is ready */}
-            <div className="border border-border-hairline rounded-firm p-8 bg-bg-panel text-center">
+            <div className="border border-border-hairline rounded-firm p-8 bg-bg-panel text-center elevation-l2">
               <p className="font-body text-text-secondary text-sm leading-relaxed mb-6">
                 Share your team code with teammates so they can join on the portal.
                 They'll use "Join Team" on the registration page.
               </p>
               {team && (
-                <p className="team-code mb-4" aria-live="polite">
+                <p className="team-code mb-4 gold-flash-reveal" aria-live="polite">
                   {team.code}
                 </p>
               )}
@@ -92,19 +93,21 @@ export default function RegistrationFlow({ onComplete }: RegistrationFlowProps) 
               >
                 ← Back
               </button>
-              <button
-                type="button"
-                onClick={advance}
-                className="
-                  inline-flex items-center gap-2
-                  bg-blue-primary text-white
-                  px-6 py-3 rounded-sharp
-                  font-body font-medium text-sm
-                  hover:bg-blue-deep transition-colors
-                "
-              >
-                Continue →
-              </button>
+              <HoverLiftButton>
+                <button
+                  type="button"
+                  onClick={advance}
+                  className="
+                    inline-flex items-center gap-2
+                    bg-blue-primary text-white
+                    px-6 py-3 rounded-sharp
+                    font-body font-medium text-sm
+                    hover:bg-blue-deep transition-colors
+                  "
+                >
+                  Continue →
+                </button>
+              </HoverLiftButton>
             </div>
           </div>
         )}
@@ -194,7 +197,7 @@ function ReviewStep({
 }) {
   return (
     <div>
-      <div className="border border-border-hairline rounded-firm p-6 bg-bg-panel mb-6">
+      <div className="border border-border-hairline rounded-firm p-6 bg-bg-panel mb-6 elevation-l1">
         <dl className="space-y-4">
           <div>
             <dt className="font-body text-caps text-text-secondary mb-1">Team Name</dt>
@@ -228,19 +231,21 @@ function ReviewStep({
         >
           ← Back
         </button>
-        <button
-          type="button"
-          onClick={onConfirm}
-          className="
-            inline-flex items-center gap-2
-            bg-blue-primary text-white
-            px-6 py-3 rounded-sharp
-            font-body font-medium text-sm
-            hover:bg-blue-deep transition-colors
-          "
-        >
-          Go to Team Portal →
-        </button>
+        <HoverLiftButton>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="
+              inline-flex items-center gap-2
+              bg-blue-primary text-white
+              px-6 py-3 rounded-sharp
+              font-body font-medium text-sm
+              hover:bg-blue-deep transition-colors
+            "
+          >
+            Go to Team Portal →
+          </button>
+        </HoverLiftButton>
       </div>
     </div>
   );

@@ -7,8 +7,6 @@ import { CountUpCounter } from '@/components/ui/RollingCounter';
 import {
   HACKATHON_NAME,
   HACKATHON_TAGLINE,
-  STAT_PRIZE,
-  STAT_TEAMS,
   STAT_EVENT_DATE,
   STAT_LOCATION,
 } from '@/lib/constants';
@@ -16,12 +14,14 @@ import {
 // ─── Hero stat strip data ─────────────────────────────────────────────────────
 // The prize pool and team count use CountUpCounter (rolling digits, one-time on mount).
 // Event date and location are static strings.
-const STATS = [
-  { label: 'Prize Pool',  display: STAT_PRIZE,     isNumeric: false },
-  { label: 'Teams',       display: STAT_TEAMS,     isNumeric: false },
-  { label: 'Event Dates', display: STAT_EVENT_DATE, isNumeric: false },
-  { label: 'Venue',       display: STAT_LOCATION,  isNumeric: false },
-];
+
+const digitStyle: React.CSSProperties = {
+  fontSize: '1.25rem',
+  color: 'var(--gold-accent)',
+  fontFamily: 'var(--font-display), Georgia, serif',
+  fontWeight: 700,
+  lineHeight: 1,
+};
 
 /**
  * Hero section.
@@ -168,19 +168,56 @@ export default function Hero() {
                 divide-x divide-border-hairline
               "
             >
-              {STATS.map(({ label, display }) => (
-                <div
-                  key={label}
-                  className="px-6 py-5 first:pl-0 last:pr-0"
-                >
-                  <dt className="font-body text-[0.6875rem] font-medium tracking-caps uppercase text-text-secondary mb-1">
-                    {label}
-                  </dt>
-                  <dd className="font-display font-semibold text-blue-deep tabular-nums text-[1.0625rem]">
-                    {display}
-                  </dd>
-                </div>
-              ))}
+              {/* Prize Pool */}
+              <div className="px-6 py-5 first:pl-0 last:pr-0 flex flex-col justify-center">
+                <dt className="font-body text-[0.6875rem] font-medium tracking-caps uppercase text-text-secondary mb-2">
+                  Prize Pool
+                </dt>
+                <dd>
+                  <div className="stat-frame">
+                    <span className="stat-value" style={{ fontSize: '1.25rem' }}>₹</span>
+                    <CountUpCounter target={5} minDigits={1} style={digitStyle} />
+                    <span className="stat-value" style={{ fontSize: '1.25rem' }}> Lakhs</span>
+                  </div>
+                </dd>
+              </div>
+
+              {/* Teams */}
+              <div className="px-6 py-5 first:pl-0 last:pr-0 flex flex-col justify-center">
+                <dt className="font-body text-[0.6875rem] font-medium tracking-caps uppercase text-text-secondary mb-2">
+                  Teams
+                </dt>
+                <dd>
+                  <div className="stat-frame">
+                    <CountUpCounter target={100} minDigits={1} style={digitStyle} />
+                    <span className="stat-value" style={{ fontSize: '1.25rem' }}> Teams</span>
+                  </div>
+                </dd>
+              </div>
+
+              {/* Event Dates */}
+              <div className="px-6 py-5 first:pl-0 last:pr-0 flex flex-col justify-center">
+                <dt className="font-body text-[0.6875rem] font-medium tracking-caps uppercase text-text-secondary mb-2">
+                  Event Dates
+                </dt>
+                <dd>
+                  <div className="stat-frame">
+                    <span className="stat-value" style={{ fontSize: '1.25rem' }}>{STAT_EVENT_DATE}</span>
+                  </div>
+                </dd>
+              </div>
+
+              {/* Venue */}
+              <div className="px-6 py-5 first:pl-0 last:pr-0 flex flex-col justify-center">
+                <dt className="font-body text-[0.6875rem] font-medium tracking-caps uppercase text-text-secondary mb-2">
+                  Venue
+                </dt>
+                <dd>
+                  <div className="stat-frame">
+                    <span className="stat-value" style={{ fontSize: '1.25rem' }}>{STAT_LOCATION}</span>
+                  </div>
+                </dd>
+              </div>
             </dl>
           </div>
         </div>

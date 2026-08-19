@@ -35,25 +35,29 @@ export const TIMELINE_EVENTS = [
     step: '01',
     label: 'Registration Opens',
     date: 'TODO: Registration open date',
-    description: 'Teams submit their profiles and register on the portal.',
+    description:
+      'Teams register on the hackathon portal by creating a team profile and inviting members. Each team selects their preferred challenge track and submits institutional credentials for verification. Registration is open to all eligible undergraduate and postgraduate students from accredited Indian institutions.',
   },
   {
     step: '02',
     label: 'Shortlist Announced',
     date: 'TODO: Shortlist announcement date',
-    description: 'Selected teams are notified and gain access to resources.',
+    description:
+      'A review committee comprising CPRI engineers and MIT Bengaluru faculty evaluates all registered teams for technical readiness and domain alignment. Shortlisted teams receive confirmation via email and gain access to preparatory resources, datasets, and mentor contact information on the portal.',
   },
   {
     step: '03',
     label: 'Day 1 — 10 Oct 2026',
     date: '10 Oct 2026',
-    description: 'Problem statement reveal, team check-in, and hacking begins.',
+    description:
+      'Shortlisted teams arrive at the venue for check-in and orientation. CPRI domain experts reveal the official problem statements for each track. Hacking begins immediately after the reveal, with dedicated mentor slots available throughout the day for technical guidance and feasibility review.',
   },
   {
     step: '04',
     label: 'Day 2 — 11 Oct 2026',
     date: '11 Oct 2026',
-    description: 'Final presentations, evaluation, and prize ceremony.',
+    description:
+      'Teams present their working solutions to a panel of CPRI scientists, MIT Bengaluru faculty, and industry reviewers. Evaluation covers technical depth, real-world applicability, and quality of engineering. The day concludes with the prize ceremony, where winning teams are recognized and awarded.',
   },
 ] as const;
 
