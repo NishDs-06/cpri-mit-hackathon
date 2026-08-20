@@ -187,9 +187,10 @@ export default function TeamInformation() {
         </div>
 
         {/* Countdown — placed here so it's visible in the registration context */}
-        <div className="mt-16 pt-12 border-t" style={{ borderColor: 'var(--brown-300)' }}>
-          <p className="text-caps mb-2" style={{ color: 'var(--brown-600)' }}>Event Countdown</p>
-          <span className="block h-0.5 mb-8" style={{ width: '2rem', background: 'var(--gold-muted)' }} />
+        <div className="mt-16 pt-12 border-t flex flex-col items-center justify-center animate-fadeIn" style={{ borderColor: 'var(--brown-300)' }}>
+          <p className="text-caps mb-4 uppercase font-semibold text-[0.6875rem] tracking-[0.12em]" style={{ color: 'var(--brown-600)' }}>
+            Event Countdown
+          </p>
           <CountdownTimer />
         </div>
       </div>

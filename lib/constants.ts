@@ -7,7 +7,7 @@
  * Change this to the real deadline before deployment.
  * TODO: Confirm registration deadline date with organizers.
  */
-export const REGISTRATION_DEADLINE = new Date('2026-09-20T23:59:59+05:30');
+export const REGISTRATION_DEADLINE = new Date('2026-09-30T23:59:59+05:30');
 
 /** Display name of the hackathon event. */
 export const HACKATHON_NAME = 'CPRI × MIT Bengaluru Hackathon';

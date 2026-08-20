@@ -18,7 +18,7 @@ export const GRAIN_OPACITY = 0.025;
 export const GLYPH_MATRIX_CONFIG = {
   mutationRate: 0.015,
   cellSize: 20,
-  opacity: 0.09,
+  opacity: 0.16,
   /** Primary glyph color — mid brown */
   color: '#7A5A3E',
   /** 1/8 cells render in muted gold */

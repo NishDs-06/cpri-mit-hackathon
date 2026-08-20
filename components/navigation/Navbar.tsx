@@ -73,14 +73,14 @@ export default function Navbar() {
       }}
     >
       <nav
-        className="max-w-7xl mx-auto px-6 lg:px-10 h-[72px] flex items-center justify-between"
+        className="max-w-7xl mx-auto px-6 lg:px-10 h-[84px] flex items-center justify-between"
         aria-label="Main navigation"
       >
         {/* Left: CPRI wordmark + divider + VED logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Link
             href="/"
-            aria-label="CPRI × MIT Bengaluru Hackathon — back to top"
+            aria-label="CPRI × VED Hackathon — back to top"
             className="hover:brightness-110 transition-[filter] duration-150"
           >
             <CpriWordmark />
@@ -89,20 +89,20 @@ export default function Navbar() {
           {/* Thin vertical divider */}
           <span
             aria-hidden="true"
-            className="w-px h-5 bg-brown-300"
+            className="w-px h-6 bg-brown-300"
           />
 
           <VedLogo />
         </div>
 
         {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={buildHref(link.href, link.anchor)}
               className="
-                text-caps text-brown-600
+                text-caps tracking-widest text-brown-600
                 hover:text-brown-900
                 transition-colors duration-150
               "
@@ -116,10 +116,10 @@ export default function Navbar() {
             href="/portal"
             className="
               inline-flex items-center justify-center
-              px-5 py-2.5
+              px-6 py-3
               bg-brown-900 text-white
               rounded-sharp
-              text-caps
+              text-caps tracking-wider
               hover:bg-brown-800
               transition-colors duration-150
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brown-900

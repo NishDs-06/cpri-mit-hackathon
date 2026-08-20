@@ -80,7 +80,7 @@ function DigitSlot({
 
   // Each slot renders a column of 10 digits (0-9).
   // We translate Y so the correct digit is in the viewport window.
-  const translateY = `translateY(${-currentDigit * 100}%)`;
+  const translateY = `translateY(${-currentDigit * 10}%)`;
 
   return (
     <span
