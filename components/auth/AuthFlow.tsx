@@ -2,7 +2,6 @@
 
 import { useAuth } from '@/context/AuthContext';
 import SignInRegisterScreen  from './SignInRegisterScreen';
-import CheckEmailScreen      from './CheckEmailScreen';
 import PortalScreen          from './PortalScreen';
 import SessionExpiredScreen  from './SessionExpiredScreen';
 
@@ -12,13 +11,8 @@ import SessionExpiredScreen  from './SessionExpiredScreen';
  * Maps AuthState → UI screen:
  *
  *   unauthenticated  → SignInRegisterScreen (default tab: Sign In)
- *   magic_link_sent  → CheckEmailScreen
  *   authenticated    → PortalScreen (profile → team → roster)
  *   session_expired  → SessionExpiredScreen
- *
- * Expired/invalid link errors are handled by app/auth/callback/page.tsx
- * (the MagicLinkCallbackHandler), which redirects here after setting the
- * appropriate error state if needed.
  *
  * The loading skeleton prevents a flash of the unauthenticated screen
  * before the initial getSession() call resolves.
@@ -41,8 +35,6 @@ export default function AuthFlow() {
   switch (authState) {
     case 'authenticated':
       return <PortalScreen />;
-    case 'magic_link_sent':
-      return <CheckEmailScreen />;
     case 'session_expired':
       return <SessionExpiredScreen />;
     case 'unauthenticated':

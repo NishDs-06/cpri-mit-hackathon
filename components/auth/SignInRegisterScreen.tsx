@@ -1,54 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { requestMagicLink } from '@/lib/api/auth';
-import { ApiError } from '@/lib/errors';
+import { startGoogleAuth } from '@/lib/api/auth';
 import { Button } from '@/components/ui/Button';
-import { FloatingLabelInput } from '@/components/ui/FloatingLabelInput';
 
 type Tab = 'signin' | 'register';
 
 /**
  * Sign In / Register screen.
  *
- * Both tabs send a magic link — the backend determines whether the email
- * is new (register flow) or existing (sign-in flow). The frontend does NOT
- * implement authentication logic; it only collects the email and fires the API call.
- *
- * Default tab: "Sign In" (per review feedback — returning participants are more likely
- * to hit this screen from the #register nav link after already having registered).
- * New participants see a clearly visible "New here? Register" option.
- *
- * No fake login. No localStorage session writes.
+ * Both tabs trigger the unified Google OAuth flow. The backend determines
+ * whether the Google account is an existing user or a new user.
  */
 export default function SignInRegisterScreen() {
-  const { onMagicLinkSent } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('signin');
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      setError('Please enter your email address.');
-      return;
-    }
-    setError(null);
-    setLoading(true);
-    try {
-      await requestMagicLink(email.trim());
-      onMagicLinkSent(email.trim());
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
+  const handleGoogleSignIn = () => {
+    startGoogleAuth();
   };
 
   return (
@@ -78,7 +46,7 @@ export default function SignInRegisterScreen() {
             aria-selected={activeTab === id}
             aria-controls={`tabpanel-${id}`}
             type="button"
-            onClick={() => { setActiveTab(id); setError(null); }}
+            onClick={() => setActiveTab(id)}
             className={`
               flex-1 pb-3 font-body font-medium text-[0.9375rem]
               border-b-2 transition-colors duration-150
@@ -94,7 +62,7 @@ export default function SignInRegisterScreen() {
         ))}
       </div>
 
-      {/* Tab panels share the same form — tab choice affects heading copy only */}
+      {/* Tab panels */}
       <div
         role="tabpanel"
         id={`tabpanel-${activeTab}`}
@@ -105,36 +73,28 @@ export default function SignInRegisterScreen() {
         </h3>
         <p className="font-body text-text-secondary text-sm mb-6">
           {activeTab === 'signin'
-            ? "Enter your registered email. We'll send you a magic link."
-            : 'Enter your email to get started. No password needed.'}
+            ? 'Sign in to continue to the portal.'
+            : 'Register to get started with your team.'}
         </p>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <FloatingLabelInput
-            id="auth-email"
-            label="Email address"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={error ?? undefined}
-            required
-          />
-
+        <div className="space-y-5">
           <Button
-            type="submit"
+            type="button"
             variant="primary"
             size="md"
             block
-            disabled={loading}
+            onClick={handleGoogleSignIn}
+            className="flex items-center justify-center gap-3 py-3"
           >
-            {loading
-              ? 'Sending…'
-              : activeTab === 'signin'
-              ? 'Send Magic Link'
-              : 'Register & Send Link'}
+            <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22c-.87-2.6-3.3-4.53-6.16-4.53z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Continue with Google</span>
           </Button>
-        </form>
+        </div>
 
         {/* Cross-tab prompt */}
         <p className="text-center text-sm font-body text-text-secondary mt-6">
@@ -143,7 +103,7 @@ export default function SignInRegisterScreen() {
               New here?{' '}
               <button
                 type="button"
-                onClick={() => { setActiveTab('register'); setError(null); }}
+                onClick={() => setActiveTab('register')}
                 className="text-blue-mid font-medium hover:text-blue-primary transition-colors"
               >
                 Register →
@@ -154,7 +114,7 @@ export default function SignInRegisterScreen() {
               Already have an account?{' '}
               <button
                 type="button"
-                onClick={() => { setActiveTab('signin'); setError(null); }}
+                onClick={() => setActiveTab('signin')}
                 className="text-blue-mid font-medium hover:text-blue-primary transition-colors"
               >
                 Sign In →

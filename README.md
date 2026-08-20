@@ -43,7 +43,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 │   ├── page.tsx                # Main page assembly (Navbar + 4 sections)
 │   ├── fonts.ts                # next/font/google definitions (Source Serif 4 + IBM Plex Sans)
 │   ├── globals.css             # Design tokens (:root vars), keyframes, reduced-motion, floating labels
-│   └── auth/callback/page.tsx  # Magic link callback handler
+│   └── auth/callback/page.tsx  # Google OAuth callback handler
 │
 ├── components/
 │   ├── nav/
@@ -57,9 +57,8 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 │   │   ├── Register.tsx        # Countdown + AuthFlow inline panel
 │   │   └── Contact.tsx         # Contact form + institutional footer
 │   ├── auth/
-│   │   ├── AuthFlow.tsx        # State machine: unauthenticated → magic_link_sent → authenticated → session_expired
+│   │   ├── AuthFlow.tsx        # State machine: unauthenticated → authenticated → session_expired
 │   │   ├── SignInRegisterScreen.tsx  # Default tab: Sign In
-│   │   ├── CheckEmailScreen.tsx
 │   │   ├── SessionExpiredScreen.tsx
 │   │   ├── ErrorScreen.tsx     # expired_link | invalid_link | forbidden | server_error
 │   │   ├── ProfileForm.tsx     # 6-field floating label form → PATCH /api/me
@@ -79,7 +78,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 │   ├── errors.ts               # ApiError + apiFetch wrapper
 │   ├── utils.ts                # cn(), isValidTeamCodeFormat(), displayUrl()
 │   └── api/
-│       ├── auth.ts             # requestMagicLink, getSession, logout, verifyMagicLinkToken
+│       ├── auth.ts             # startGoogleAuth, getSession, logout
 │       ├── profile.ts          # getMe, updateProfile
 │       └── teams.ts            # getMyTeam, createTeam, joinTeam
 │
@@ -101,8 +100,8 @@ All API calls are isolated in `/lib/api/`. Connect the backend by:
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/api/auth/magic-link` | Send magic link to email |
-| `POST` | `/api/auth/callback` | Verify token, set session cookie |
+| `GET`  | `/api/auth/google` | Starts Google OAuth flow (browser nav) |
+| `GET`  | `/api/auth/google/callback` | Backend OAuth callback (never called directly by frontend) |
 | `GET`  | `/api/auth/session` | Return current session (401 if none) |
 | `POST` | `/api/auth/logout` | Invalidate session |
 | `GET`  | `/api/me` | Get authenticated user's profile |
@@ -111,6 +110,23 @@ All API calls are isolated in `/lib/api/`. Connect the backend by:
 | `POST` | `/api/teams` | Create team (backend generates code) |
 | `POST` | `/api/teams/join` | Join by code (returns TeamJoinResolution) |
 | `POST` | `/api/contact` | Contact form submission |
+
+### Google OAuth Security Model & Frontend-Backend Boundary
+
+This project implements a secure, cookie-based session model utilizing Google OAuth 2.0.
+
+- **OAuth Flow Initiation:** The frontend initiates authentication by redirecting the browser directly to `GET /api/auth/google`. No frontend `fetch` request is used to start OAuth.
+- **Authorization Code Flow:** The backend handles the Google OAuth Authorization Code flow:
+  1. Prompts user login via Google.
+  2. Receives and processes the authorization callback at `GET /api/auth/google/callback`.
+  3. Verifies the identity with Google, exchanges the authorization code for tokens, and creates/retrieves the local user.
+  4. Establishes an application session and sets an HTTP-only, Secure session cookie.
+  5. Redirects the browser back to the frontend at `/auth/callback`.
+- **Session Check:** The frontend callback page (`app/auth/callback/page.tsx`) queries the backend `GET /api/auth/session` to check if a session exists, retrieves the user profile, updates the context state, and redirects to `/portal`.
+- **Security Boundaries:**
+  - The frontend never sees, processes, or stores Google access tokens, refresh tokens, ID tokens, or client secrets.
+  - The backend remains the sole source of truth for authentication.
+  - No authentication tokens or JWTs are stored in `localStorage`, `sessionStorage`, or URL query parameters on the frontend.
 
 ---
 

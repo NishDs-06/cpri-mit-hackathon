@@ -26,7 +26,7 @@ export default function SessionExpiredScreen() {
         Session Expired
       </h3>
       <p className="font-body text-text-secondary text-sm leading-relaxed mb-8">
-        Your session has expired for security reasons. Please sign in again with a new magic link.
+        Your session has expired for security reasons. Please sign in again with Google.
       </p>
       <Button
         type="button"
