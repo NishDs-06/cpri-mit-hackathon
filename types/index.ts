@@ -10,7 +10,6 @@ export type TeamStatus =
 
 export type AuthState =
   | 'unauthenticated'
-  | 'magic_link_sent'
   | 'authenticated'
   | 'session_expired';
 
@@ -67,9 +66,7 @@ export interface TeamJoinResolution {
 
 // ─── Request payloads ─────────────────────────────────────────────────────────
 
-export interface MagicLinkRequest {
-  email: string;
-}
+
 
 export interface ProfileUpdateRequest {
   name?: string;

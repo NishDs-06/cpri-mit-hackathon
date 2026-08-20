@@ -22,20 +22,13 @@ interface AuthContextValue {
   /** Whether the initial auth check is still in flight */
   loading: boolean;
   /**
-   * Marks state as 'magic_link_sent' — called after requestMagicLink() succeeds.
-   * Does NOT establish a real session; that happens only after the magic link is clicked.
-   */
-  onMagicLinkSent: (email: string) => void;
-  /**
    * Refreshes the session and profile from the backend.
-   * Called by MagicLinkCallbackHandler after token verification before redirecting,
+   * Called by OAuth Callback handler after session is established on backend,
    * so the portal renders in the correct authenticated state immediately.
    */
-  refreshSession: () => Promise<void>;
+  refreshSession: () => Promise<AuthSession | null>;
   /** Logs out — calls the backend, then clears local auth state */
   logout: () => Promise<void>;
-  /** The email the magic link was sent to (for the "check your inbox" screen) */
-  magicLinkEmail: string | null;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -45,7 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [magicLinkEmail, setMagicLinkEmail] = useState<string | null>(null);
 
   /**
    * On mount, check for an existing session from the backend.
@@ -75,14 +67,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  const onMagicLinkSent = useCallback((email: string) => {
-    setMagicLinkEmail(email);
-    setAuthState('magic_link_sent');
-  }, []);
+
 
   /**
    * Refresh session + profile from the backend.
-   * MagicLinkCallbackHandler calls this BEFORE redirecting to the portal,
+   * Callback page calls this after backend flow establishes session,
    * ensuring the context is populated and the portal doesn't flash as unauthenticated.
    */
   const refreshSession = useCallback(async () => {
@@ -93,8 +82,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userProfile = await getMe();
         setProfile(userProfile);
         setAuthState('authenticated');
+        return currentSession;
       } else {
         setAuthState('session_expired');
+        return null;
       }
     } catch (err) {
       if (err instanceof ApiError && err.isUnauthorized) {
@@ -111,7 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Always clear local state, even if the backend call fails
       setSession(null);
       setProfile(null);
-      setMagicLinkEmail(null);
       setAuthState('unauthenticated');
     }
   }, []);
@@ -123,10 +113,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         session,
         profile,
         loading,
-        onMagicLinkSent,
         refreshSession,
         logout,
-        magicLinkEmail,
       }}
     >
       {children}

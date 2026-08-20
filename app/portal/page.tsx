@@ -10,7 +10,7 @@ import AuthFlow from '@/components/auth/AuthFlow';
  * /portal — default portal entry.
  *
  * Auth routing logic:
- *  - Unauthenticated / magic_link_sent / session_expired → show AuthFlow sign-in
+ *  - Unauthenticated / session_expired → show AuthFlow sign-in
  *  - Authenticated + no team → redirect to /portal/register
  *  - Authenticated + has team → redirect to /portal/team
  *
@@ -67,7 +67,7 @@ export default function PortalPage() {
                 Sign in to your account
               </h1>
               <p className="font-body text-text-secondary text-[0.9375rem]">
-                Enter your email and we'll send you a magic link to sign in.
+                Sign in with Google to access your team dashboard and registration details.
               </p>
             </div>
 

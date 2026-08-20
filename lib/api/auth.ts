@@ -1,21 +1,13 @@
 import { apiFetch } from '@/lib/errors';
-import type { AuthSession, MagicLinkRequest } from '@/types';
+import { API_BASE_URL } from '@/lib/constants';
+import type { AuthSession } from '@/types';
 
 /**
- * POST /api/auth/magic-link
- *
- * Triggers the backend to send a magic link to the given email address.
- * The frontend does NOT generate or validate the link — that is the backend's job.
- *
- * This function is intentionally thin: it sends the email to the backend
- * and returns void. The UI transitions to the "check your email" state on success.
+ * Initiates browser navigation to the backend Google OAuth flow.
+ * Does not use fetch.
  */
-export async function requestMagicLink(email: string): Promise<void> {
-  const payload: MagicLinkRequest = { email };
-  await apiFetch<void>('/api/auth/magic-link', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+export function startGoogleAuth(): void {
+  window.location.href = `${API_BASE_URL}/api/auth/google`;
 }
 
 /**
@@ -48,26 +40,4 @@ export async function getSession(): Promise<AuthSession | null> {
  */
 export async function logout(): Promise<void> {
   await apiFetch<void>('/api/auth/logout', { method: 'POST' });
-}
-
-/**
- * GET /api/auth/callback?token=...
- *
- * Called by MagicLinkCallbackHandler. Sends the token from the magic link
- * URL to the backend for validation. The backend sets the session cookie
- * on success.
- *
- * Returns the established session so AuthContext can be updated immediately
- * before the redirect — preventing a stale unauthenticated render flash.
- *
- * Token is sent in the Authorization header, NOT in the URL, to avoid
- * it appearing in server logs or Referer headers.
- *
- * Throws ApiError with status 401 for expired tokens, 400 for invalid ones.
- */
-export async function verifyMagicLinkToken(token: string): Promise<AuthSession> {
-  return apiFetch<AuthSession>('/api/auth/callback', {
-    method: 'POST',
-    body: JSON.stringify({ token }),
-  });
 }
